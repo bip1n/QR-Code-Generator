@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QR-Code Generator</title>
+    <link rel="stylesheet" href="./style.css">
+    <script src="./script.js"></script>
+
+</head>
+<body>
+    <div class="card-container">
+        <h3>QR Code Generator</h3>
+        <textarea class="inputField" rows="5" placeholder="Enter Text" id="text-input"></textarea>
+        <button type="button" class="primary" onclick="generateQR()">Generate QR Code</button>
+        
+        <div class="qr-code-container" id="qrcode"></div>
+        
+        <!-- Download button initially hidden -->
+        <a id="downloadLink" download="qrcode.png" style="display: none;">
+            <button type="button" class="downloadButton" onclick="downloadQR()">Download QR Code</button>
+        </a>
+    </div>
+    
+    <footer>
+        <p>
+            Developed By <a target="_blank" href="https://github.com/bip1n">bip1n</a>
+        </p>
+    </footer>
+    <script src="https://cdn.jsdelivr.net/npm/qrcode-generator/qrcode.js"></script>
+    <script>
+    function generateQR() {
+        var qrDiv = document.getElementById('qrcode');
+        var qrText = document.getElementById('text-input').value.trim(); // Remove leading/trailing spaces
+
+        if (qrText === '') {
+            // Show an alert message within the container
+            var alertMessage = document.createElement('p');
+            alertMessage.textContent = 'Please enter some text.';
+            alertMessage.style.color = 'red'; // Style the alert message
+            qrDiv.innerHTML = ''; // Clear previous content
+            qrDiv.appendChild(alertMessage); // Append the message to the container
+
+            // Hide the download button if there's an error
+            var downloadButton = document.getElementById('downloadLink');
+            downloadButton.style.display = 'none';
+
+            return; // Exit the function if the input is empty
+        }
+
+        // Clear the previous content in the container
+        qrDiv.innerHTML = '';
+
+        // Generate QR code
+        var qr = qrcode(0, 'M');
+        qr.addData(qrText);
+        qr.make();
+        qrDiv.innerHTML = qr.createImgTag();
+
+        // Show the download button after QR code generation
+        var downloadButton = document.getElementById('downloadLink');
+        downloadButton.style.display = 'block';
+    }
+
+    function downloadQR() {
+        var qrImage = document.getElementById('qrcode').getElementsByTagName('img')[0].src;
+        var downloadLink = document.createElement('a');
+        downloadLink.href = qrImage;
+        downloadLink.download = 'qrcode.png';
+        document.body.appendChild(downloadLink);
+        downloadLink.click();
+        document.body.removeChild(downloadLink);
+    }
+    </script>
+
+</html>
